@@ -17,7 +17,42 @@
                 url_change: []
             }
         };
+        
+    var printableEventsHistory = function () {
+            var res = {};
+            
+            Object.keys(eventsHistory).forEach(function (eventName, index) {
+                res[eventName] = {};
+                Object.keys(eventsHistory[eventName]).forEach(function (eventType, index) {
+                    res[eventName][eventType] = eventsHistory[eventName][eventType].length;
+                });
+            });
+            return JSON.stringify(res);
+        };
+        
+    var debug = true, 
+        debugIframe;
+        
+    var onReady = function (fn) {
+        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+            fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
+    };
     
+    debug && onReady(function () {
+        debugIframe = document.createElement('iframe');
+        document.body.appendChild(debugIframe);
+        debugIframe.contentDocument.body.innerHTML = printableEventsHistory();
+    });
+    
+    var updateDebugIframe = function () {
+            if (debugIframe) {
+                debugIframe.contentDocument.body.innerHTML = printableEventsHistory();
+            }
+        };
+        
     var countEvent = function (name, type) {
             if (typeof eventsHistory[name] !== 'undefined' &&
                 typeof eventsHistory[name][type] !== 'undefined') {
@@ -26,6 +61,7 @@
             } else {
                 console.log('Undefined event', name, type);
             }
+            debug && updateDebugIframe();
         };
         
     var config = window.website_observer_config || {

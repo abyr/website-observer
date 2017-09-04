@@ -1,17 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 	<script>window.website_observer_config={pageview:{onload:true,url_change:true}};</script>
 	<script src="observer.js"></script>
 </head>
 <body>
-	<h1>Demo</h1>
+	<style>
+		iframe {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			background: #ffffff;
+			height: 100px;
+			width: 100%;
+		}
+		.debug-offset {
+			margin-bottom: 120px;
+		}
+	</style>
 	
-	<h2>Links:</h2>
-	<ul>
-		<li><a href="#first">Link 1</a></li>
-		<li><a href="#second">Link 2</a></li>
-		<li><a href="#third">Link 3</a></li>
-	</ul>
+	<div id="content">
+		<h1>Demo</h1>
+		
+		<h2>Links:</h2>
+		<ul>
+			<li><a href="#first">Link 1</a></li>
+			<li><a href="#second">Link 2</a></li>
+			<li><a href="#third">Link 3</a></li>
+		</ul>
+		
+		<a href="setup.html">Setup</a>
+		
+	</div>
 </body>
 </html>
