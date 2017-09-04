@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+</head>
+<body>
+    <form>
+        <fieldset>
+            <legend>Pageview</legend>
+            <p>
+                <input type="checkbox" name="onload" checked="checked" class="event-rule" data-event-name="pageview" data-event-type="onload" disabled />
+                <label for="onload">On page load</label>
+            </p>
+            <p>
+                <input type="checkbox" name="url_change" checked="checked" class="event-rule" data-event-name="pageview" data-event-type="url_change" />
+                <label for="url_change">On URL change</label>
+            </p>
+        </fieldset>
+        <input type="button" id="save" value="Save"></input>
+    </form>
+    
+    <span id="code_snippet"></span>
+    
+    <script>
+        document.getElementById('save').addEventListener('click', function () {
+            var config = {};
+            Array.prototype.forEach.call(document.querySelectorAll('.event-rule'), function (el) {
+                console.log(el.checked, el);
+                if (el.checked) {
+                    if (!config[el.getAttribute('data-event-name')]) {
+                        config[el.getAttribute('data-event-name')] = {};
+                    }
+                    config[el.getAttribute('data-event-name')][el.getAttribute('data-event-type')] = true;
+                }
+            });
+            document.getElementById('code_snippet').innerHTML = 'window.website_observer_config = ' + JSON.stringify(config);
+        });
+    </script>
+</body>
+</html>

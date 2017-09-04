@@ -28,7 +28,7 @@
             }
         };
         
-    var config = window.website_config || {
+    var config = window.website_observer_config || {
             pageview: {
                 onload: true
             }
