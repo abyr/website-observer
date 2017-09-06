@@ -11,7 +11,6 @@ Name | Type
 
 `pageview: url_match <String: regular expression>`
 
-``
 
 ## Subscribe
 
