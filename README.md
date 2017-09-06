@@ -1,5 +1,7 @@
 # website-observer
 
+[Demo](https://abyr.github.io/website-observer/demo.html)
+
 ## Events
 Name | Type
 
