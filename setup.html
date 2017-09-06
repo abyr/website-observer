@@ -15,27 +15,48 @@
                 <input type="checkbox" name="url_change" checked="checked" class="event-rule" data-event-name="pageview" data-event-type="url_change" />
                 <label for="url_change">On URL change</label>
             </p>
+            <p>
+                <input type="checkbox" name="url_match" class="event-rule"
+                    data-event-name="pageview"
+                    data-event-type="url_match"
+                    data-event-val="url_match_val" />
+                <label for="url_match">URL match</label>
+            </p>
+            <p>
+                <input type="text" value="" id="url_match_val" />
+            </p>
         </fieldset>
         <input type="button" id="save" value="Save"></input>
     </form>
-    
+
     <div id="code_snippet"></div>
-    
+
     <a href="demo.html">Demo</a>
-    
+
     <script>
         document.getElementById('save').addEventListener('click', function () {
             var config = {};
+
             Array.prototype.forEach.call(document.querySelectorAll('.event-rule'), function (el) {
-                console.log(el.checked, el);
+                var eventType = el.getAttribute('data-event-type'),
+                    eventName = el.getAttribute('data-event-name'),
+                    eventValueId = el.getAttribute('data-event-val');
+
                 if (el.checked) {
-                    if (!config[el.getAttribute('data-event-name')]) {
-                        config[el.getAttribute('data-event-name')] = {};
+                    if (!config[eventName]) {
+                        config[eventName] = {};
                     }
-                    config[el.getAttribute('data-event-name')][el.getAttribute('data-event-type')] = true;
+                    if (eventValueId) {
+                        config[eventName][eventType] = {
+                            value: document.getElementById(eventValueId).value
+                        };
+                    } else {
+                        config[eventName][eventType] = true;
+                    }
                 }
             });
-            document.getElementById('code_snippet').innerHTML = 'window.website_observer_config = ' + JSON.stringify(config);
+            document.getElementById('code_snippet').innerHTML = 'window.website_observer_config = ' +
+                JSON.stringify(config) + ';';
         });
     </script>
 </body>
