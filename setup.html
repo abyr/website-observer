@@ -8,22 +8,36 @@
         <fieldset>
             <legend>Pageview</legend>
             <p>
-                <input type="checkbox" name="onload" checked="checked" class="event-rule" data-event-name="pageview" data-event-type="onload" disabled />
+                <input type="checkbox" name="pageload" checked="checked" class="event-rule"
+                    data-event-name="pageload"
+                    disabled
+                />
                 <label for="onload">On page load</label>
             </p>
             <p>
-                <input type="checkbox" name="url_change" checked="checked" class="event-rule" data-event-name="pageview" data-event-type="url_change" />
+                <input type="checkbox" name="url_change" checked="checked" class="event-rule"
+                    data-event-name="url_change"
+                    data-event-type="url_change"
+                />
                 <label for="url_change">On URL change</label>
             </p>
             <p>
-                <input type="checkbox" name="url_match" class="event-rule"
-                    data-event-name="pageview"
-                    data-event-type="url_match"
+                <input type="checkbox" name="url_change_match" class="event-rule"
+                    data-event-name="url_change_match"
                     data-event-val="url_match_val" />
                 <label for="url_match">URL match</label>
             </p>
             <p>
                 <input type="text" value="" id="url_match_val" />
+            </p>
+            <p>
+                <input type="checkbox" name="click" class="event-rule"
+                    data-event-name="click"
+                    data-event-val="click_val" />
+                <label for="url_match">Click</label>
+            </p>
+            <p>
+                <input type="text" value="" id="click_val" />
             </p>
         </fieldset>
         <input type="button" id="save" value="Save"></input>
@@ -38,24 +52,27 @@
             var config = {};
 
             Array.prototype.forEach.call(document.querySelectorAll('.event-rule'), function (el) {
-                var eventType = el.getAttribute('data-event-type'),
-                    eventName = el.getAttribute('data-event-name'),
-                    eventValueId = el.getAttribute('data-event-val');
+                var eventName,
+                    eventValueId,
+                    val;
 
-                if (el.checked) {
-                    if (!config[eventName]) {
-                        config[eventName] = {};
+                if (!el.checked) {
+                    return;
+                }
+
+                eventName = el.getAttribute('data-event-name');
+                eventValueId = el.getAttribute('data-event-val');
+
+                if (eventValueId) {
+                    val = document.getElementById(eventValueId).value;
+                    if (val) {
+                        config[eventName] = val;
                     }
-                    if (eventValueId) {
-                        config[eventName][eventType] = {
-                            value: document.getElementById(eventValueId).value
-                        };
-                    } else {
-                        config[eventName][eventType] = true;
-                    }
+                } else {
+                    config[eventName] = true;
                 }
             });
-            document.getElementById('code_snippet').innerHTML = 'window.website_observer_config = ' +
+            document.getElementById('code_snippet').innerHTML = 'window.observer_events_config = ' +
                 JSON.stringify(config) + ';';
         });
     </script>

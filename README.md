@@ -20,10 +20,10 @@ Name | Type
         console.log('WSO Event', evnt.detail);
     });
 	window.observer_events_config = {
-	    pageload':true,
-	    url_change':true,
-	    url_change_match':'second',
-	    click: ''
+	    pageload: true,
+	    url_change: true,
+	    url_change_match: 'second',
+	    click: 'a'
 	};
 </script>
 <script src="observer.js"></script>
