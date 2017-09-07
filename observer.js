@@ -41,14 +41,15 @@
     };
 
     Observer.prototype.printableEventsHistory = function () {
-        var res = {};
-
-        Object.keys(this.eventsConfig).forEach(function (eventName, index) {
-            if (typeof this.eventsHistory[eventName] !== 'undefined') {
-                res[eventName] = this.eventsHistory[eventName].length;
+        return Object.keys(this.eventsConfig).map(function (eventName, index) {
+            if (typeof this.eventsHistory[eventName] === 'undefined') {
+                return '';
+            } else {
+                return eventName +
+                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') +
+                    ': ' + this.eventsHistory[eventName].length;
             }
-        }.bind(this));
-        return JSON.stringify(res);
+        }.bind(this)).join("<br />");
     };
 
     Observer.prototype.observeUrlChange = function (urlPattern) {
