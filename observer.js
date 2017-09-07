@@ -18,7 +18,7 @@
             }
         };
 
-    var Observer = function (config, options) {
+    var Observer = function (config) {
             this.eventsConfig = config || {};
             this.lastUrl = window.location.href;
             this.eventsList = alleventsList,
