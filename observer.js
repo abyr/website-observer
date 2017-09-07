@@ -1,5 +1,5 @@
 (function () {
-    var eventsConfig = window.website_observer_config || { pageload: true, url_change: true },
+    var eventsConfig = window.observer_events_config || { pageload: true, url_change: true },
         debug = 1,
         debugIframe,
         alleventsList = ['pageload', 'url_change', 'url_change_match', 'click'],
@@ -31,6 +31,7 @@
     Observer.prototype.start = function () {
         this.fireEvent('pageload');
         this.observeUrlChange(this.eventsConfig.url_change_match);
+        this.observeClick(this.eventsConfig.click);
 
         if (debug) {
             debugIframe = document.createElement('iframe');
@@ -72,35 +73,41 @@
         }
     };
 
-    Observer.prototype.clickListener = function () {
+    Observer.prototype.observeClick = function (cssSelector) {
+        var elements = document.querySelectorAll(cssSelector);
 
+        Array.prototype.forEach.call(elements, function (el) {
+            el.addEventListener('click', function () {
+                this.fireEvent('click', { target: el });
+            }.bind(this));
+        }.bind(this));
     };
 
     /**
      * @private
      */
-    Observer.prototype.triggerEvent = function (eventName) {
+    Observer.prototype.fireEvent = function (eventName, data) {
+        this.eventsHistory[eventName].push(true);
+        if (debug) {
+            updateDebugIframe();
+        }
+        this.triggerEvent(eventName, Object.assign({ name: eventName }, data));
+    };
+
+    /**
+     * @private
+     */
+    Observer.prototype.triggerEvent = function (eventName, detail) {
         /* global CustomEvent */
         var observerEvent;
 
         if (window.CustomEvent) {
-            observerEvent = new CustomEvent('wso-event', {detail: {name: eventName}});
+            observerEvent = new CustomEvent('wso-event', { detail: detail });
         } else {
             observerEvent = document.createEvent('CustomEvent');
             observerEvent.initCustomEvent('wso-event', true, true, {name: eventName});
         }
         document.dispatchEvent(observerEvent);
-    };
-
-    /**
-     * @private
-     */
-    Observer.prototype.fireEvent = function (eventName) {
-        this.eventsHistory[eventName].push(true);
-        if (debug) {
-            updateDebugIframe();
-        }
-        this.triggerEvent(eventName);
     };
 
     observer = new Observer(eventsConfig);
