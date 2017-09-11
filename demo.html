@@ -10,7 +10,7 @@
 			bottom: 0;
 			left: 0;
 			background: #ffffff;
-			height: 100px;
+			height: 150px;
 			width: 100%;
 		}
 	</style>
@@ -35,8 +35,9 @@
 			"pageload":true,
 			"url_change":true,
 			"url_change_match":"second",
-			"click":"a"
+			"clicks": ['a', 'h1']
 		};
+		window.observer_events_config = {"pageload":true,"url_change":true,"url_change_match":"first","clicks":["a","h1"]};
 	</script>
 	<script src="observer.js"></script>
 </body>

@@ -2,7 +2,7 @@
     var eventsConfig = window.observer_events_config || { pageload: true, url_change: true },
         debug = 1,
         debugIframe,
-        alleventsList = ['pageload', 'url_change', 'url_change_match', 'click'],
+        alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'],
         observer;
 
     var onReady = function (fn) {
@@ -23,15 +23,28 @@
             this.lastUrl = window.location.href;
             this.eventsList = alleventsList,
             this.eventsHistory = {};
-            this.eventsList.forEach(function (eventName) {
-                this.eventsHistory[eventName] = [];
-            }.bind(this));
+
+            alleventsList.forEach(function (eventName) {
+                var listedEvent = this.eventsConfig[eventName];
+
+                if (eventName === 'clicks') {
+                    this.eventsHistory[eventName] = {};
+                    listedEvent.forEach(function (eventItem) {
+                        this.eventsHistory[eventName][eventItem] = [];
+                    }, this);
+                } else {
+                    this.eventsHistory[eventName] = [];
+                }
+            }, this);
         };
 
     Observer.prototype.start = function () {
         this.fireEvent('pageload');
         this.observeUrlChange(this.eventsConfig.url_change_match);
-        this.observeClick(this.eventsConfig.click);
+
+        if (Array.isArray(this.eventsConfig.clicks)) {
+            this.observeClicksList(this.eventsConfig.clicks);
+        }
 
         if (debug) {
             debugIframe = document.createElement('iframe');
@@ -42,14 +55,22 @@
 
     Observer.prototype.printableEventsHistory = function () {
         return Object.keys(this.eventsConfig).map(function (eventName, index) {
-            if (typeof this.eventsHistory[eventName] === 'undefined') {
+            var eventInHistory = this.eventsHistory[eventName];
+
+            if (eventName === 'clicks') {
+                return Object.keys(eventInHistory).map(function (itemName) {
+                    return 'click ' + itemName + ':' + eventInHistory[itemName].length;
+                }).join('<br />');
+            }
+
+            if (typeof eventInHistory === 'undefined') {
                 return '';
             } else {
                 return eventName +
                     (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') +
-                    ': ' + this.eventsHistory[eventName].length;
+                    ': ' + eventInHistory.length;
             }
-        }.bind(this)).join("<br />");
+        }.bind(this)).join('<br />');
     };
 
     Observer.prototype.observeUrlChange = function (urlPattern) {
@@ -74,21 +95,36 @@
         }
     };
 
+    Observer.prototype.observeClicksList = function (cssSelectorsList) {
+        cssSelectorsList.forEach(function (cssSelector) {
+            this.observeClick(cssSelector);
+        }, this);
+    };
+
     Observer.prototype.observeClick = function (cssSelector) {
         var elements = document.querySelectorAll(cssSelector);
 
         Array.prototype.forEach.call(elements, function (el) {
             el.addEventListener('click', function () {
-                this.fireEvent('click', { target: el });
+                this.fireEvent('clicks', {
+                    cssSelector: cssSelector,
+                    target: el
+                });
             }.bind(this));
-        }.bind(this));
+        }, this);
     };
 
     /**
      * @private
      */
     Observer.prototype.fireEvent = function (eventName, data) {
-        this.eventsHistory[eventName].push(true);
+        var eventInHistory = this.eventsHistory[eventName];
+
+        if (eventName === 'clicks') {
+            eventInHistory = this.eventsHistory[eventName][data.cssSelector];
+        }
+
+        eventInHistory.push(true);
         if (debug) {
             updateDebugIframe();
         }

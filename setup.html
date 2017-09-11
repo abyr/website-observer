@@ -5,7 +5,7 @@
 </head>
 <body>
     <form>
-        <fieldset>
+        <fieldset id="events_form">
             <legend>Pageview</legend>
             <p>
                 <input type="checkbox" name="pageload" checked="checked" class="event-rule"
@@ -31,23 +31,50 @@
                 <input type="text" value="" id="url_match_val" />
             </p>
             <p>
-                <input type="checkbox" name="click" class="event-rule"
+                <input type="checkbox" name="clicks[]" class="event-rule"
                     data-event-name="click"
-                    data-event-val="click_val" />
+                    data-event-val="click_val-c3" />
                 <label for="url_match">Click</label>
             </p>
             <p>
-                <input type="text" value="" id="click_val" />
+                <input type="text" value="" id="click_val-c3" />
             </p>
         </fieldset>
+        <p>
+            <input type="button" id="add_click" value="Add click"></input>
+        </p>
         <input type="button" id="save" value="Save"></input>
     </form>
 
-    <div id="code_snippet"></div>
+    <p id="code_snippet"></p>
 
-    <a href="demo.html">Demo</a>
+    <p>
+        <a href="demo.html">Demo</a>
+    </p>
 
     <script>
+        document.getElementById('add_click').addEventListener('click', function () {
+            var rules_count = 1 + document.querySelectorAll('.event-rule').length;
+
+            var p1 = document.createElement('p'),
+                p2 = document.createElement('p');
+
+            p1.innerHTML = `
+                <p>
+                    <input type="checkbox" name="clicks[]" class="event-rule"
+                        data-event-name="click"
+                        data-event-val="click_val-c` + rules_count + `" />
+                    <label for="url_match">Click</label>
+                </p>`;
+
+            p2.innerHTML = `
+                <p>
+                    <input type="text" value="" id="click_val-c` + rules_count + `" />
+                </p>`;
+
+            document.getElementById('events_form').appendChild(p1).appendChild(p2);
+        });
+
         document.getElementById('save').addEventListener('click', function () {
             var config = {};
 
@@ -62,14 +89,17 @@
 
                 eventName = el.getAttribute('data-event-name');
                 eventValueId = el.getAttribute('data-event-val');
+                val = eventValueId ? document.getElementById(eventValueId).value : null;
 
-                if (eventValueId) {
-                    val = document.getElementById(eventValueId).value;
+                if (eventName === 'click') {
+                    if (!config.clicks) {
+                        config.clicks = [];
+                    }
                     if (val) {
-                        config[eventName] = val;
+                        config.clicks.push(val);
                     }
                 } else {
-                    config[eventName] = true;
+                    config[eventName] = eventValueId ? val : true;
                 }
             });
             document.getElementById('code_snippet').innerHTML = 'window.observer_events_config = ' +

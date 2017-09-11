@@ -7,7 +7,7 @@
 * `onload`
 * `url_change`
 * `url_change_match` <String: regular expression>
-* `click` <String: CSS selector>
+* `clicks` <Array: comma-separated list of CSS selectors>
 
 
 ## Subscribe
