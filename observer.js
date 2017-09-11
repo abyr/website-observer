@@ -107,8 +107,7 @@
         Array.prototype.forEach.call(elements, function (el) {
             el.addEventListener('click', function () {
                 this.fireEvent('clicks', {
-                    cssSelector: cssSelector,
-                    target: el
+                    cssSelector: cssSelector
                 });
             }.bind(this));
         }, this);
