@@ -102,7 +102,7 @@
                 JSON.stringify(config) + ';';
 
             var demoUrl = window.location.protocol + '//' + window.location.host +
-                '/abyrcheg/website-observer/demo.html' +
+                window.location.pathname.replace('setup', 'demo') +
                 encodeURI('?wsoc=' + JSON.stringify(config));
 
             window.location.href = demoUrl;
