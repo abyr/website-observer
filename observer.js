@@ -1,9 +1,8 @@
 (function () {
-    var eventsConfig = window.observer_events_config || { pageload: true, url_change: true },
+    var eventsConfig = window.wsoc,
         debug = 1,
         debugIframe,
-        alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'],
-        observer;
+        alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'];
 
     var onReady = function (fn) {
             if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
@@ -14,7 +13,7 @@
         },
         updateDebugIframe = function () {
             if (debugIframe) {
-                debugIframe.contentDocument.body.innerHTML = observer.printableEventsHistory();
+                debugIframe.contentDocument.body.innerHTML = window.wso.printableEventsHistory();
             }
         };
 
@@ -24,10 +23,12 @@
             this.eventsList = alleventsList,
             this.eventsHistory = {};
 
+            this.urlChangeInterval = null;
+
             alleventsList.forEach(function (eventName) {
                 var listedEvent = this.eventsConfig[eventName];
 
-                if (eventName === 'clicks') {
+                if (eventName === 'clicks' && listedEvent && listedEvent.length) {
                     this.eventsHistory[eventName] = {};
                     listedEvent.forEach(function (eventItem) {
                         this.eventsHistory[eventName][eventItem] = [];
@@ -49,7 +50,7 @@
         if (debug) {
             debugIframe = document.createElement('iframe');
             document.body.appendChild(debugIframe);
-            debugIframe.contentDocument.body.innerHTML = observer.printableEventsHistory();
+            debugIframe.contentDocument.body.innerHTML = this.printableEventsHistory();
         }
     };
 
@@ -74,7 +75,7 @@
     };
 
     Observer.prototype.observeUrlChange = function (urlPattern) {
-        setInterval(function () {
+        this.urlChangeInterval = setInterval(function () {
             this.isUrlChanged(urlPattern);
         }.bind(this), 100);
     };
@@ -146,7 +147,9 @@
         document.dispatchEvent(observerEvent);
     };
 
-    observer = new Observer(eventsConfig);
-    onReady(function () { observer.start(); });
+    window.wso = new Observer(eventsConfig);
+    onReady(function () {
+        window.wso.start();
+    });
 
 })();

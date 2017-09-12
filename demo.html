@@ -28,10 +28,12 @@
 		<a href="setup.html">Setup</a>
 	</div>
 	<script>
+		var wsoc = window.location.search && JSON.parse(decodeURI(window.location.search.replace('?wsoc=', '')));
+
 		document.addEventListener('wso-event', function (evnt) {
 	        console.log('WSO Event', evnt.detail);
 	    });
-		window.observer_events_config = {"pageload":true,"url_change":true,"url_change_match":"first","clicks":["a","h1"]};
+		window.wsoc = wsoc || {"pageload":true,"url_change":true};
 	</script>
 	<script src="observer.js"></script>
 </body>
