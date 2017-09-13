@@ -40,10 +40,35 @@
                 <input type="text" value="" id="click_val-c3" />
             </p>
         </fieldset>
+
         <p>
             <input type="button" id="add_click" value="Add click"></input>
         </p>
-        <input type="button" id="save" value="Try on demo page"></input>
+
+        <fieldset id="events_attrs">
+            <label>Custom attributes</label>
+            <p>
+                <input type="checkbox" class="event-attr-flag" />
+                <input type="text" class="event-attr" value="category" />
+            </p>
+            <p>
+                <input type="checkbox" class="event-attr-flag" />
+                <input type="text" class="event-attr" value="action" />
+            </p>
+            <p>
+                <input type="checkbox" class="event-attr-flag" />
+                <input type="text" class="event-attr" value="label" />
+            </p>
+            <p>
+                <input type="checkbox" class="event-attr-flag" />
+                <input type="text" class="event-attr" value="value" />
+            </p>
+        </fieldset>
+
+        <p>
+            <input type="button" id="save" value="Try on demo page"></input>
+        </p>
+
     </form>
 
     <p id="code_snippet"></p>
@@ -98,6 +123,17 @@
                     config[eventName] = eventValueId ? val : true;
                 }
             });
+
+            Array.prototype.forEach.call(document.querySelectorAll('.event-attr-flag'), function (el) {
+                if (!el.checked) {
+                    return;
+                }
+                if (!config.attrs) {
+                    config.attrs = [];
+                }
+                config.attrs.push(el.nextElementSibling.value);
+            });
+
             document.getElementById('code_snippet').innerHTML = 'window.observer_events_config = ' +
                 JSON.stringify(config) + ';';
 
