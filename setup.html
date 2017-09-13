@@ -43,14 +43,10 @@
         <p>
             <input type="button" id="add_click" value="Add click"></input>
         </p>
-        <input type="button" id="save" value="Save"></input>
+        <input type="button" id="save" value="Try on demo page"></input>
     </form>
 
     <p id="code_snippet"></p>
-
-    <p>
-        <a href="demo.html">Demo</a>
-    </p>
 
     <script>
         document.getElementById('add_click').addEventListener('click', function () {
@@ -104,6 +100,12 @@
             });
             document.getElementById('code_snippet').innerHTML = 'window.observer_events_config = ' +
                 JSON.stringify(config) + ';';
+
+            var demoUrl = window.location.protocol + '//' + window.location.host +
+                window.location.pathname.replace('setup', 'demo') +
+                encodeURI('?wsoc=' + JSON.stringify(config));
+
+            window.location.href = demoUrl;
         });
     </script>
 </body>
