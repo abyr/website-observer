@@ -6,7 +6,7 @@
 <body>
     <form>
         <fieldset id="events_form">
-            <legend>Pageview</legend>
+            <legend>Events</legend>
             <p>
                 <input type="checkbox" name="pageload" checked="checked" class="event-rule"
                     data-event-name="pageload"
@@ -40,13 +40,18 @@
                 <input type="text" value="" id="click_val-c3" />
             </p>
         </fieldset>
+
         <p>
             <input type="button" id="add_click" value="Add click"></input>
         </p>
-        <input type="button" id="save" value="Try on demo page"></input>
+
+        <p>
+            <input type="button" id="save" value="Generate code"></input>
+        </p>
+
     </form>
 
-    <p id="code_snippet"></p>
+    <code id="code_snippet"></code>
 
     <script>
         document.getElementById('add_click').addEventListener('click', function () {
@@ -98,15 +103,25 @@
                     config[eventName] = eventValueId ? val : true;
                 }
             });
-            document.getElementById('code_snippet').innerHTML = 'window.observer_events_config = ' +
-                JSON.stringify(config) + ';';
 
-            var demoUrl = window.location.protocol + '//' + window.location.host +
-                window.location.pathname.replace('setup', 'demo') +
-                encodeURI('?wsoc=' + JSON.stringify(config));
+            Array.prototype.forEach.call(document.querySelectorAll('.event-attr-flag'), function (el) {
+                if (!el.checked) {
+                    return;
+                }
+                if (!config.attrs) {
+                    config.attrs = [];
+                }
+                config.attrs.push(el.nextElementSibling.value);
+            });
 
-            window.location.href = demoUrl;
+            document.getElementById('code_snippet').innerHTML = `
+                !function(e,c,a){
+                    var r=document.getElementsByTagName(c)[0],
+            		    s=document.createElement(c);</br>
+            		e[a]=` + JSON.stringify(config) + `;</br>
+            		s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r);
+        		}(window,"script","wsoc");`;
         });
-    </script>
+	</script>
 </body>
 </html>

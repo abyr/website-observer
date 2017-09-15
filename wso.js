@@ -1,5 +1,5 @@
 (function () {
-    var eventsConfig = window.wsoc,
+    var eventsConfig = window.wsoc || {},
         debug = 1,
         debugIframe,
         alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'];
@@ -123,7 +123,6 @@
         if (eventName === 'clicks') {
             eventInHistory = this.eventsHistory[eventName][data.cssSelector];
         }
-
         eventInHistory.push(true);
         if (debug) {
             updateDebugIframe();
@@ -136,13 +135,16 @@
      */
     Observer.prototype.triggerEvent = function (eventName, detail) {
         /* global CustomEvent */
-        var observerEvent;
+        var observerEvent,
+            data = {};
+
+        data = Object.assign(data, detail, { name: eventName });
 
         if (window.CustomEvent) {
-            observerEvent = new CustomEvent('wso-event', { detail: detail });
+            observerEvent = new CustomEvent('wso-event', { detail: data });
         } else {
             observerEvent = document.createEvent('CustomEvent');
-            observerEvent.initCustomEvent('wso-event', true, true, {name: eventName});
+            observerEvent.initCustomEvent('wso-event', true, true, data);
         }
         document.dispatchEvent(observerEvent);
     };

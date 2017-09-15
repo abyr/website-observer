@@ -19,6 +19,7 @@
 		<h1>Demo</h1>
 
 		<h2>Links:</h2>
+
 		<ul>
 			<li><a href="#first">Link 1</a></li>
 			<li><a href="#second">Link 2</a></li>
@@ -27,14 +28,18 @@
 
 		<a href="setup.html">Setup</a>
 	</div>
-	<script>
-		var wsoc = window.location.search && JSON.parse(decodeURI(window.location.search.replace('?wsoc=', '')));
 
+	<script>
+		!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
+        e[a]={"pageload":true,"url_change":true,"url_change_match":"second","clicks":["a","h1"]};
+        s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r); }(window,"script","wsoc");
+	</script>
+
+	<script>
 		document.addEventListener('wso-event', function (evnt) {
 	        console.log('WSO Event', evnt.detail);
 	    });
-		window.wsoc = wsoc || {"pageload":true,"url_change":true};
 	</script>
-	<script src="observer.js"></script>
+
 </body>
 </html>
