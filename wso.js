@@ -1,5 +1,5 @@
 (function () {
-    var eventsConfig = window.wsoc,
+    var eventsConfig = window.wsoc || {},
         debug = 1,
         debugIframe,
         alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'];
@@ -22,7 +22,6 @@
             this.lastUrl = window.location.href;
             this.eventsList = alleventsList,
             this.eventsHistory = {};
-            this.attrs = Array.isArray(config.attrs) ? config.attrs : null;
 
             this.urlChangeInterval = null;
 
@@ -137,20 +136,9 @@
     Observer.prototype.triggerEvent = function (eventName, detail) {
         /* global CustomEvent */
         var observerEvent,
-            attrs = {},
             data = {};
 
-        if (this.attrs) {
-            this.attrs.forEach(function (attr) {
-                var val = this.getAttr(attr);
-
-                if (val) {
-                    attrs[attr] = val;
-                }
-            }, this);
-        }
-
-        data = Object.assign(data, attrs, detail, { name: eventName });
+        data = Object.assign(data, detail, { name: eventName });
 
         if (window.CustomEvent) {
             observerEvent = new CustomEvent('wso-event', { detail: data });
@@ -159,13 +147,6 @@
             observerEvent.initCustomEvent('wso-event', true, true, data);
         }
         document.dispatchEvent(observerEvent);
-    };
-
-    /**
-     * @private
-     */
-    Observer.prototype.getAttr = function (attr) {
-        return window[attr];
     };
 
     window.wso = new Observer(eventsConfig);
