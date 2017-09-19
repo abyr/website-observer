@@ -5,6 +5,9 @@
 </head>
 <body>
 	<style>
+	    body {
+	        margin-bottom: 200px;
+	    }
 		iframe {
 			position: fixed;
 			bottom: 0;
@@ -13,40 +16,85 @@
 			height: 150px;
 			width: 100%;
 		}
+		article {
+		    width: 400px;
+		}
 	</style>
 
 	<div id="content">
-		<h1>H1. Demo</h1>
+		<h1 title="header 1">H1. Demo</h1>
 
 		<h2>H2. Links:</h2>
 
 		<ul class="list">
 			<li class="list-item">
-		        <a href="#first">#first</a>
+		        <a href="#first" data-id="first">#first</a>
 		    </li>
 			<li class="list-item">
-		        <a href="#second">#second</a>
+		        <a href="#second" data-id="second">#second</a>
 		    </li>
 			<li class="list-item">
-			    <a href="#third">#third</a>
+			    <a href="#third" data-id="third">#third</a>
 			</li>
 		</ul>
 
 		<a href="setup.html">Setup</a>
 
+		<article id="a1">
+		    <header>
+                <h2>Article 1</h2>
+            </header>
+            <p>Quas lorem fringilla. Deserunt ornare iure penatibus, augue fringilla distinctio tenetur, consequuntur nisl perspiciatis nisi deserunt, maxime? Explicabo itaque aliquet nunc! Possimus felis animi, montes alias! Nemo. Neque, nullam odio.</p>
+
+            <p>Occaecati diam massa aliquam, nonummy. Maiores, ratione doloribus curae pariatur quisque etiam? Tristique senectus nam, cumque? Cum etiam class dictum nam aptent. Hic netus, odit tempor! Tempus taciti! Occaecati pede.</p>
+
+            <p>Pulvinar quo incidunt nostrum laudantium adipiscing consequat aliquam. Aliquid potenti eveniet perspiciatis. Nisi primis ullamcorper, corporis sagittis cum, optio aspernatur, facilisi suscipit rerum sapien! Praesent consequat magni tincidunt class commodo.</p>
+
+            <p>Ea beatae et velit eiusmod quae pede potenti, fames nihil molestie, aperiam cubilia praesent, laboris deleniti turpis lorem! Cumque ullam officia, fermentum sit eaque! Odit aperiam. Ornare, pariatur, dictum occaecati.</p>
+
+            <p>Neque commodi praesent itaque accusantium consequat, tempore wisi adipisicing? Nisl ullamcorper orci, egestas, cupiditate sequi corrupti hendrerit totam pharetra possimus? Urna! Augue ipsum quidem alias pellentesque, minus? Sociis esse, montes.</p>
+		</article>
+
+		<article id="a2">
+		    <header>
+                <h2>Article 2</h2>
+            </header>
+            <p>Corrupti facere consectetuer assumenda, fugiat, dolorum dis gravida fuga dolorem orci iure? Ipsa et ipsum exercitation magnis minima blandit ut, dignissimos nostra minim laborum! Consequat. Mollis numquam porta, cupiditate sunt.</p>
+
+            <p>Tempore temporibus nec imperdiet ligula voluptas? Nostrud, aspernatur totam doloremque nihil voluptatibus nobis! Dolorum, iure cubilia! Eius atque, viverra molestiae augue. Dolores excepteur inceptos assumenda est scelerisque labore repudiandae qui.</p>
+
+            <p>Fuga metus accumsan erat phasellus accumsan dignissim quisque aspernatur quaerat? Porttitor? Felis, erat atque iste magni fames non cupiditate libero nesciunt perspiciatis pellentesque hymenaeos. Nostra hac habitasse mollis. Non donec.</p>
+
+            <p>Maiores mollis, quasi ea. Atque netus porro habitasse habitant magna, at tempus, leo porro suscipit unde odio qui quibusdam proin accumsan iure, pellentesque ullam! Pede ducimus aliquid. Montes, diam nostrud.</p>
+
+            <p>Do euismod lacinia cras, porro irure ac aspernatur mi dapibus integer odit totam incidunt cum? Provident iste quasi. Risus! Delectus ducimus voluptatem consequat cillum, facere, excepturi, turpis corporis nulla, euismod.</p>
+		</article>
+
+		<article id="a3">
+		    <header>
+		        <h2>Article 3</h2>
+		    </header>
+            <p>Aenean donec fugiat incididunt fermentum facilis eaque nulla veniam volutpat magnam mus sint magni sed luctus! Non suspendisse animi netus fugit? Quaerat? Cillum repellendus habitant, explicabo praesent maiores pulvinar tempus.</p>
+
+            <p>Litora ut eum erat possimus eleifend aptent iaculis? Urna beatae egestas? Habitant molestias omnis magna faucibus! Consequatur eiusmod ullamco accusantium vel? Ullam vel nonummy platea quibusdam. Esse? Hac repellat, aliquip.</p>
+
+            <p>Itaque auctor non veniam iusto montes ex modi? Cras! Quos laboris curae eius, eu nonummy! Voluptas! Occaecat laboriosam. Molestiae mollit mauris ratione netus corrupti dolores vivamus architecto ea eum delectus.</p>
+
+            <p>Adipisci commodi eos pede praesentium ullamco netus. Nisi cras. Perferendis facilisis quas laoreet animi. Montes? Facilisi, placeat risus accusamus eius laudantium? Magni, eaque adipiscing? Corrupti. Lectus, dolore tincidunt lorem aliquid.</p>
+
+            <p>Iusto. Tortor fugit, magnis neque venenatis dignissimos, distinctio aptent occaecat turpis labore. Lacus qui laboriosam aenean. Wisi senectus odio perferendis repellendus labore aptent. Rem. Tenetur maiores fusce earum lacus! Totam.</p>
+		</article>
+
         <footer>
             <p>
                 by <a href="https://abyr.github.io" target="_blank">Aleksandr Denisenko</a>
             </p>
-    		<p>
-    		    <img src="https://abyr.github.io/img/avatar.jpg" alt="" />
-    		</p>
 		</footer>
 	</div>
 
 	<script>
 		!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
-        e[a]={"pageload":true,"url_change":true,"url_change_match":"second","clicks":["a","h1"]};
+        e[a]={"pageload":true,"url_change":true,"finish_article":true,"clicks":[{"target":"a","attrs":["data-id"]},{"target":"h1","attrs":["title"]}]};
         s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r); }(window,"script","wsoc");
 	</script>
 

@@ -7,6 +7,7 @@
 * `onload`
 * `url_change`
 * `url_change_match` <String: regular expression>
+* `finish_article`
 * `clicks` <Array: comma-separated list of CSS selectors>
 
 ## Setup

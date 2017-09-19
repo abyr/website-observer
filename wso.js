@@ -2,7 +2,7 @@
     var eventsConfig = window.wsoc || {},
         debug = 1,
         debugIframe,
-        alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'];
+        alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks', 'finish_article'];
 
     var onReady = function (fn) {
             if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
@@ -46,6 +46,8 @@
         if (Array.isArray(this.eventsConfig.clicks)) {
             this.observeClicksList(this.eventsConfig.clicks);
         }
+
+        this.observeScrollToArticle();
 
         if (debug) {
             debugIframe = document.createElement('iframe');
@@ -112,6 +114,30 @@
                 });
             }.bind(this));
         }, this);
+    };
+
+    Observer.prototype.observeScrollToArticle = function () {
+        var elements = document.querySelectorAll('article');
+
+        this.resetReadArticles();
+
+        Array.prototype.forEach.call(elements, function (el, iter) {
+            var offset = el.getBoundingClientRect(),
+                articleId = el.getAttribute('id');
+
+            window.addEventListener("scroll", function () {
+                if (document.body.scrollTop > offset.top && iter > this.lastArticleIter) {
+                    this.fireEvent('finish_article', { id: articleId });
+                    this.lastArticleIter = iter;
+                } else if (document.body.scrollTop === 0) {
+                    this.resetReadArticles();
+                }
+            }.bind(this));
+        }, this);
+    };
+
+    Observer.prototype.resetReadArticles = function () {
+        this.lastArticleIter = -1;
     };
 
     /**
