@@ -30,14 +30,11 @@
             <p>
                 <input type="text" value="" id="url_match_val" />
             </p>
+
             <p>
-                <input type="checkbox" name="clicks[]" class="event-rule"
-                    data-event-name="click"
-                    data-event-val="click_val-c3" />
-                <label for="url_match">Click</label>
-            </p>
-            <p>
-                <input type="text" value="" id="click_val-c3" />
+                <input type="checkbox" name="finish_article" class="event-rule"
+                    data-event-name="finish_article"/>
+                <label for="url_match">Finish article (TBD)</label>
             </p>
         </fieldset>
 
@@ -53,27 +50,38 @@
 
     <code id="code_snippet"></code>
 
+    <p>
+      <a href="demo.html" target="_blank">Demo page</a>
+    </p>
+
     <script>
         document.getElementById('add_click').addEventListener('click', function () {
             var rules_count = 1 + document.querySelectorAll('.event-rule').length;
 
             var p1 = document.createElement('p'),
-                p2 = document.createElement('p');
+                p2 = document.createElement('p'),
+                p3 = document.createElement('p');
 
             p1.innerHTML = `
                 <p>
                     <input type="checkbox" name="clicks[]" class="event-rule"
                         data-event-name="click"
-                        data-event-val="click_val-c` + rules_count + `" />
+                        data-event-val="click_val-c` + rules_count + `"
+                        data-event-attrs="click_attrs-c` + rules_count + `" />
                     <label for="url_match">Click</label>
                 </p>`;
 
             p2.innerHTML = `
                 <p>
-                    <input type="text" value="" id="click_val-c` + rules_count + `" />
+                    <input type="text" value="" id="click_val-c` + rules_count + `" placeholder="Selector..." />
                 </p>`;
 
-            document.getElementById('events_form').appendChild(p1).appendChild(p2);
+            p3.innerHTML = `
+                <p>
+                    <input type="text" value="" id="click_attrs-c` + rules_count + `" placeholder="Attributes..." />
+                </p>`;
+
+            document.getElementById('events_form').appendChild(p1).appendChild(p2).appendChild(p3);
         });
 
         document.getElementById('save').addEventListener('click', function () {
@@ -81,8 +89,9 @@
 
             Array.prototype.forEach.call(document.querySelectorAll('.event-rule'), function (el) {
                 var eventName,
-                    eventValueId,
-                    val;
+                    eventValueId, eventAttrsId,
+                    val,
+                    attrs;
 
                 if (!el.checked) {
                     return;
@@ -90,15 +99,24 @@
 
                 eventName = el.getAttribute('data-event-name');
                 eventValueId = el.getAttribute('data-event-val');
+                eventAttrsId = el.getAttribute('data-event-attrs');
                 val = eventValueId ? document.getElementById(eventValueId).value : null;
 
                 if (eventName === 'click') {
-                    if (!config.clicks) {
-                        config.clicks = [];
+                    let eventObj = {};
+
+                    if (!config.click) {
+                        config.click = [];
                     }
                     if (val) {
-                        config.clicks.push(val);
+                        eventObj.target = val;
                     }
+                    attrs = eventValueId ? document.getElementById(eventAttrsId).value : null;
+                    if (attrs) {
+                        eventObj.attrs = attrs.split(',');
+                    }
+
+                    config.click.push(eventObj);
                 } else {
                     config[eventName] = eventValueId ? val : true;
                 }

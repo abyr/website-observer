@@ -2,7 +2,7 @@
     var eventsConfig = window.wsoc || {},
         debug = 1,
         debugIframe,
-        alleventsList = ['pageload', 'url_change', 'url_change_match', 'clicks'];
+        alleventsList = ['pageload', 'url_change', 'url_change_match', 'click', 'finish_article'];
 
     var onReady = function (fn) {
             if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
@@ -28,10 +28,10 @@
             alleventsList.forEach(function (eventName) {
                 var listedEvent = this.eventsConfig[eventName];
 
-                if (eventName === 'clicks' && listedEvent && listedEvent.length) {
+                if (eventName === 'click' && listedEvent && listedEvent.length) {
                     this.eventsHistory[eventName] = {};
                     listedEvent.forEach(function (eventItem) {
-                        this.eventsHistory[eventName][eventItem] = [];
+                        this.eventsHistory[eventName][eventItem.target] = [];
                     }, this);
                 } else {
                     this.eventsHistory[eventName] = [];
@@ -43,9 +43,11 @@
         this.fireEvent('pageload');
         this.observeUrlChange(this.eventsConfig.url_change_match);
 
-        if (Array.isArray(this.eventsConfig.clicks)) {
-            this.observeClicksList(this.eventsConfig.clicks);
+        if (Array.isArray(this.eventsConfig.click)) {
+            this.observeclickList(this.eventsConfig.click);
         }
+
+        this.observeScrollToArticle();
 
         if (debug) {
             debugIframe = document.createElement('iframe');
@@ -58,9 +60,9 @@
         return Object.keys(this.eventsConfig).map(function (eventName, index) {
             var eventInHistory = this.eventsHistory[eventName];
 
-            if (eventName === 'clicks') {
+            if (eventName === 'click') {
                 return Object.keys(eventInHistory).map(function (itemName) {
-                    return 'click ' + itemName + ':' + eventInHistory[itemName].length;
+                    return 'click ' + itemName + ': ' + eventInHistory[itemName].length;
                 }).join('<br />');
             }
 
@@ -71,7 +73,7 @@
                     (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') +
                     ': ' + eventInHistory.length;
             }
-        }.bind(this)).join('<br />');
+        }.bind(this)).concat(['...', JSON.stringify(eventsConfig)]).join('<br />');
     };
 
     Observer.prototype.observeUrlChange = function (urlPattern) {
@@ -96,22 +98,54 @@
         }
     };
 
-    Observer.prototype.observeClicksList = function (cssSelectorsList) {
-        cssSelectorsList.forEach(function (cssSelector) {
-            this.observeClick(cssSelector);
+    Observer.prototype.observeclickList = function (clickList) {
+        clickList.forEach(function (clickEvObj) {
+            this.observeClick(clickEvObj);
         }, this);
     };
 
-    Observer.prototype.observeClick = function (cssSelector) {
-        var elements = document.querySelectorAll(cssSelector);
+    Observer.prototype.observeClick = function (clickEvObj) {
+        var elements = document.querySelectorAll(clickEvObj.target);
 
         Array.prototype.forEach.call(elements, function (el) {
             el.addEventListener('click', function () {
-                this.fireEvent('clicks', {
-                    cssSelector: cssSelector
-                });
+                var data = {
+                        cssSelector: clickEvObj.target
+                    };
+
+                if (Array.isArray(clickEvObj.attrs)) {
+                    clickEvObj.attrs.forEach(function (attr) {
+                        data[attr] = el.getAttribute(attr);
+                    });
+                }
+
+                this.fireEvent('click', data);
             }.bind(this));
         }, this);
+    };
+
+    Observer.prototype.observeScrollToArticle = function () {
+        var elements = document.querySelectorAll('article');
+
+        this.resetReadArticles();
+
+        Array.prototype.forEach.call(elements, function (el, iter) {
+            var offset = el.getBoundingClientRect(),
+                articleId = el.getAttribute('id');
+
+            window.addEventListener("scroll", function () {
+                if (document.body.scrollTop > offset.top && iter > this.lastArticleIter) {
+                    this.fireEvent('finish_article', { id: articleId });
+                    this.lastArticleIter = iter;
+                } else if (document.body.scrollTop === 0) {
+                    this.resetReadArticles();
+                }
+            }.bind(this));
+        }, this);
+    };
+
+    Observer.prototype.resetReadArticles = function () {
+        this.lastArticleIter = -1;
     };
 
     /**
@@ -120,7 +154,7 @@
     Observer.prototype.fireEvent = function (eventName, data) {
         var eventInHistory = this.eventsHistory[eventName];
 
-        if (eventName === 'clicks') {
+        if (eventName === 'click') {
             eventInHistory = this.eventsHistory[eventName][data.cssSelector];
         }
         eventInHistory.push(true);
