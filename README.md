@@ -8,7 +8,9 @@
 * `url_change`
 * `url_change_match` <String: regular expression>
 * `finish_article`
-* `clicks` <Array: comma-separated list of CSS selectors>
+* `click` <Array: objects>
+    * `click[].target` <String: CSS selector>
+    * `click[].attrs` <String: comma-separated list of attributes>
 
 ## Setup
 
@@ -17,7 +19,7 @@ Generate a code snippet on [setup](https://abyr.github.io/website-observer/setup
 ```
 <script>
 	!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
-    e[a]={"pageload":true,"url_change":true,"url_change_match":"second","clicks":["a","h1"]};
+    e[a]={"pageload":true,"url_change":true,"url_change_match":"page","finish_article":true,"click":[{"target":"article"}]};
     s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r); }(window,"script","wsoc");
 </script>
 ```
