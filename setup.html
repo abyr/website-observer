@@ -105,10 +105,9 @@
                 if (eventName === 'click') {
                     let eventObj = {};
 
-                    if (!config.clicks) {
-                        config.clicks = [];
+                    if (!config.click) {
+                        config.click = [];
                     }
-
                     if (val) {
                         eventObj.target = val;
                     }
@@ -117,7 +116,7 @@
                         eventObj.attrs = attrs.split(',');
                     }
 
-                    config.clicks.push(eventObj);
+                    config.click.push(eventObj);
                 } else {
                     config[eventName] = eventValueId ? val : true;
                 }

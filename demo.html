@@ -22,7 +22,7 @@
 	</style>
 
 	<div id="content">
-		<h1 title="header 1">H1. Demo</h1>
+		<h1 title="header 1" data-subtitle="subheader 1">H1. Demo</h1>
 
 		<h2>H2. Links:</h2>
 
@@ -94,7 +94,7 @@
 
 	<script>
 		!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
-        e[a]={"pageload":true,"url_change":true,"finish_article":true,"clicks":[{"target":"a","attrs":["data-id"]},{"target":"h1","attrs":["title"]}]};
+        e[a]={"pageload":true,"url_change":true,"finish_article":true,"click":[{"target":"a","attrs":["data-id"]},{"target":"h1","attrs":["title","data-subtitle"]},{"target":"article"}]};
         s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r); }(window,"script","wsoc");
 	</script>
 
