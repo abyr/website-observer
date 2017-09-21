@@ -162,7 +162,7 @@
                ? window.innerHeight
                : document.documentElement.offsetHeight,
             height = document.body.clientHeight,
-            checkPointRatios = [0.25, 0.5, 0.75, 1],
+            checkPointRatios = [0.25, 0.5, 0.75, 1].reverse(),
             lastCheckPoint = -1;
 
         window.addEventListener("scroll", function () {
@@ -177,7 +177,7 @@
                     return;
                 }
                 if (currentHeight > neededHeight && lastCheckPoint < neededHeight) {
-                    lastCheckPoint = currentHeight;
+                    lastCheckPoint = neededHeight;
                     reachedNewCheckPoint = true;
                     this.fireEvent('scroll_depth', { depth: (ratio * 100) + '%' });
                 }
