@@ -2,7 +2,7 @@
     var eventsConfig = window.wsoc || {},
         debug = 1,
         debugIframe,
-        alleventsList = ['pageload', 'url_change', 'url_change_match', 'click', 'finish_article'];
+        alleventsList = ['pageload', 'url_change', 'url_change_match', 'click', 'finish_article', 'scroll_depth'];
 
     var onReady = function (fn) {
             if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
@@ -41,13 +41,22 @@
 
     Observer.prototype.start = function () {
         this.fireEvent('pageload');
-        this.observeUrlChange(this.eventsConfig.url_change_match);
+
+        if (this.eventsConfig.url_change_match) {
+            this.observeUrlChange(this.eventsConfig.url_change_match);
+        }
 
         if (Array.isArray(this.eventsConfig.click)) {
             this.observeclickList(this.eventsConfig.click);
         }
 
-        this.observeScrollToArticle();
+        if (this.eventsConfig.finish_article) {
+            this.observeScrollToArticle();
+        }
+
+        if (this.eventsConfig.scroll_depth) {
+            this.observeScrollDepth();
+        }
 
         if (debug) {
             debugIframe = document.createElement('iframe');
@@ -146,6 +155,34 @@
 
     Observer.prototype.resetReadArticles = function () {
         this.lastArticleIter = -1;
+    };
+
+    Observer.prototype.observeScrollDepth = function () {
+        var screenHeight = "innerHeight" in window
+               ? window.innerHeight
+               : document.documentElement.offsetHeight,
+            height = document.body.clientHeight,
+            checkPointRatios = [0.25, 0.5, 0.75, 1],
+            lastCheckPoint = -1;
+
+        window.addEventListener("scroll", function () {
+            var scrollTop = document.body.scrollTop,
+                reachedNewCheckPoint = false;
+
+            checkPointRatios.forEach(function (ratio) {
+                var currentHeight = scrollTop + screenHeight * 0.5,
+                    neededHeight = height * ratio - screenHeight * 0.5;
+
+                if (reachedNewCheckPoint) {
+                    return;
+                }
+                if (currentHeight > neededHeight && lastCheckPoint < neededHeight) {
+                    lastCheckPoint = currentHeight;
+                    reachedNewCheckPoint = true;
+                    this.fireEvent('scroll_depth', { depth: (ratio * 100) + '%' });
+                }
+            }, this);
+        }.bind(this));
     };
 
     /**
