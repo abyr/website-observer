@@ -32,9 +32,15 @@
             </p>
 
             <p>
+              <input type="checkbox" name="scroll_depth" class="event-rule"
+                    data-event-name="scroll_depth"/>
+                <label for="scroll_depth">Scroll depth</label>
+            </p>
+
+            <p>
                 <input type="checkbox" name="finish_article" class="event-rule"
                     data-event-name="finish_article"/>
-                <label for="url_match">Finish article (TBD)</label>
+                <label for="finish_article">Finish article (TBD)</label>
             </p>
         </fieldset>
 
@@ -68,7 +74,7 @@
                         data-event-name="click"
                         data-event-val="click_val-c` + rules_count + `"
                         data-event-attrs="click_attrs-c` + rules_count + `" />
-                    <label for="url_match">Click</label>
+                    <label for="">Click</label>
                 </p>`;
 
             p2.innerHTML = `
