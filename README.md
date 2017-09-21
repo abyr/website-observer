@@ -1,21 +1,14 @@
 # website-observer
 
-[Demo](https://abyr.github.io/website-observer/demo.html)
+Observe what is happening with your website using such events like page views, scroll depth, clicks.
 
-## Events
-
-* `onload`
-* `url_change`
-* `url_change_match` <String: regular expression>
-* `finish_article`
-* `click` <Array: objects>
-    * `click[].target` <String: CSS selector>
-    * `click[].attrs` <String: comma-separated list of attributes>
+[Quick Demo](https://abyr.github.io/website-observer/demo.html)
 
 ## Setup
 
-Generate a code snippet on [setup](https://abyr.github.io/website-observer/setup.html) page.
+Step 1. Generate a code snippet on [setup](https://abyr.github.io/website-observer/setup.html) page.
 
+A code snippet example:
 ```
 <script>
 	!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
@@ -24,9 +17,9 @@ Generate a code snippet on [setup](https://abyr.github.io/website-observer/setup
 </script>
 ```
 
-Paste the code into HTML.
+Step 2. Paste the code into your HTML.
 
-Subscribe to events
+Now you can subscribe to events like this
 
 ```
 <script>
@@ -35,3 +28,45 @@ Subscribe to events
     });
 </script>
 ```
+
+## Events
+
+### onload
+
+`onload`
+
+It fires once on page is loaded by default.
+
+### url_change
+
+`url_change`
+
+It fires once URL is changed.
+
+### url_change_match
+
+`url_change_match` <String: regular expression>
+
+It fires every time URL is changed and it includes the text.
+
+### scroll_depth
+
+`scroll_depth`
+
+It fires once a user scrolled through 25%, 50%, 75%, 100% scroll points based on initial page height.
+
+### finish_article
+
+`finish_article`
+
+It fires every time you scrolled to the end of `<article>`.
+
+### click
+
+`click` <Array: objects>
+
+`click[].target` <String: CSS selector>
+
+`click[].attrs` <String: comma-separated list of attributes>
+
+It fires every time you click on an element with cssSelector. The fired event will have DOM element attributes passed as attrs.
