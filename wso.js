@@ -162,7 +162,7 @@
                ? window.innerHeight
                : document.documentElement.offsetHeight,
             height = document.body.clientHeight,
-            checkPointRatios = [0.25, 0.5, 0.75, 1].reverse(),
+            checkPointRatios = [0.25, 0.5, 0.75, 1],
             lastCheckPoint = -1;
 
         window.addEventListener("scroll", function () {
