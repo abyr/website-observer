@@ -1,6 +1,6 @@
 (function () {
     var eventsConfig = window.wsoc || {},
-        debug = 1,
+        debug = window.location.search.indexOf("debug=1") > 0,
         debugIframe,
         alleventsList = ['pageload', 'url_change', 'url_change_match', 'click', 'finish_article', 'scroll_depth'];
 
@@ -42,7 +42,7 @@
     Observer.prototype.start = function () {
         this.fireEvent('pageload');
 
-        if (this.eventsConfig.url_change_match) {
+        if (this.eventsConfig.url_change || this.eventsConfig.url_change_match) {
             this.observeUrlChange(this.eventsConfig.url_change_match);
         }
 
@@ -56,12 +56,6 @@
 
         if (this.eventsConfig.scroll_depth) {
             this.observeScrollDepth();
-        }
-
-        if (debug) {
-            debugIframe = document.createElement('iframe');
-            document.body.appendChild(debugIframe);
-            debugIframe.contentDocument.body.innerHTML = this.printableEventsHistory();
         }
     };
 
@@ -222,6 +216,11 @@
 
     window.wso = new Observer(eventsConfig);
     onReady(function () {
+        if (debug) {
+            debugIframe = document.createElement('iframe');
+            document.body.appendChild(debugIframe);
+            debugIframe.contentDocument.body.innerHTML = window.wso.printableEventsHistory();
+        }
         window.wso.start();
     });
 
