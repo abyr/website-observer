@@ -45,17 +45,14 @@
         if (this.eventsConfig.url_change || this.eventsConfig.url_change_match) {
             this.observeUrlChange(this.eventsConfig.url_change_match);
         }
-
         if (Array.isArray(this.eventsConfig.click)) {
             this.observeclickList(this.eventsConfig.click);
         }
-
-        if (this.eventsConfig.finish_article) {
-            this.observeScrollToArticle();
-        }
-
         if (this.eventsConfig.scroll_depth) {
             this.observeScrollDepth();
+        }
+        if (typeof this.eventsConfig.finish_article === 'object') {
+            this.observeScrollToArticle();
         }
     };
 
@@ -82,7 +79,7 @@
     Observer.prototype.observeUrlChange = function (urlPattern) {
         this.urlChangeInterval = setInterval(function () {
             this.isUrlChanged(urlPattern);
-        }.bind(this), 100);
+        }.bind(this), 10);
     };
 
     /**
@@ -128,7 +125,8 @@
     };
 
     Observer.prototype.observeScrollToArticle = function () {
-        var elements = document.querySelectorAll('article');
+        var elements = document.querySelectorAll('article'),
+            eventConfigObject = this.eventsConfig.finish_article
 
         this.resetReadArticles();
 
@@ -136,9 +134,20 @@
             var offset = el.getBoundingClientRect(),
                 articleId = el.getAttribute('id');
 
-            window.addEventListener("scroll", function () {
+            window.addEventListener('scroll', function () {
                 if (document.body.scrollTop > offset.top && iter > this.lastArticleIter) {
-                    this.fireEvent('finish_article', { id: articleId });
+                    var data = {
+                        id: articleId || iter,
+                        el: el
+                    };
+
+                    if (Array.isArray(eventConfigObject.attrs)) {
+                        eventConfigObject.attrs.forEach(function (attr) {
+                            data[attr] = el.getAttribute(attr);
+                        });
+                    }
+
+                    this.fireEvent('finish_article', data);
                     this.lastArticleIter = iter;
                 } else if (document.body.scrollTop === 0) {
                     this.resetReadArticles();
