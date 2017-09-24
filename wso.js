@@ -110,7 +110,7 @@
         Array.prototype.forEach.call(elements, function (el) {
             el.addEventListener('click', function () {
                 var data = {
-                        cssSelector: clickEvObj.target
+                        target: clickEvObj.target
                     };
 
                 if (Array.isArray(clickEvObj.attrs)) {
@@ -195,7 +195,7 @@
         var eventInHistory = this.eventsHistory[eventName];
 
         if (eventName === 'click') {
-            eventInHistory = this.eventsHistory[eventName][data.cssSelector];
+            eventInHistory = this.eventsHistory[eventName][data.target];
         }
         eventInHistory.push(true);
         if (debug) {

@@ -12,7 +12,7 @@ A code snippet example:
 ```
 <script>
 	!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
-    e[a]={"pageload":true,"url_change":true,"url_change_match":"page","finish_article":true,"click":[{"target":"article"}]};
+    e[a]={"pageload":true,"url_change":true,"url_change_match":"page","finish_article":{attrs:["data-id"]},"click":[{"target":"article"}]};
     s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r); }(window,"script","wsoc");
 </script>
 ```
