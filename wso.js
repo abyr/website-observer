@@ -210,7 +210,9 @@
     Observer.prototype.triggerEvent = function (eventName, detail) {
         /* global CustomEvent */
         var observerEvent,
-            data = {};
+            data = {
+                alias: this.getAlias(eventName, detail)
+            };
 
         data = Object.assign(data, detail, { name: eventName });
 
@@ -221,6 +223,18 @@
             observerEvent.initCustomEvent('wso-event', true, true, data);
         }
         document.dispatchEvent(observerEvent);
+    };
+
+    Observer.prototype.getAlias = function (eventName, detail) {
+        if (eventName === 'click' && detail && detail.target) {
+            let eventObj = this.eventsConfig[eventName].find(function (ev) {
+                    return ev.target === detail.target;
+                });
+
+            return eventObj.alias || eventName + ':' + detail.target;
+        } else {
+            return this.eventsConfig[eventName].alias || eventName;
+        }
     };
 
     window.wso = new Observer(eventsConfig);

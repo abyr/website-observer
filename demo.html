@@ -94,9 +94,7 @@
 
 	<script>
 		!function(e,c,a){ var r=document.getElementsByTagName(c)[0], s=document.createElement(c);
-        e[a]={"pageload":true,"url_change":true,"scroll_depth":true,"finish_article":true,
-            "click":[{"target":"a","attrs":["data-id"]},{"target":"h1","attrs":["title","data-subtitle"]},{"target":"article"}]
-        };
+        e[a]={"pageload":{"alias":"pageload"},"url_change":{"alias":"url_change"},"scroll_depth":{"alias":"scroll_depth"},"finish_article":{"alias":"finish_article","attrs":""},"click":[{"alias":"click","target":"article"},{"alias":"click","target":"h1"}]};
         s.async=!0,s.src="wso.js",r.parentNode.insertBefore(s,r); }(window,"script","wsoc");
 	</script>
 

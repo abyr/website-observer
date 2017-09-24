@@ -10,9 +10,11 @@
             <p>
                 <input type="checkbox" name="pageload" checked="checked" class="event-rule"
                     data-event-name="pageload"
+                    data-alias-val=""
                     disabled
                 />
                 <label for="onload">On page load</label>
+                <input type="text" class="event-alias" value="pageload" placeholder="alias" />
             </p>
             <p>
                 <input type="checkbox" name="url_change" checked="checked" class="event-rule"
@@ -20,27 +22,30 @@
                     data-event-type="url_change"
                 />
                 <label for="url_change">On URL change</label>
+                <input type="text" class="event-alias" value="url_change" placeholder="alias" />
             </p>
             <p>
                 <input type="checkbox" name="url_change_match" class="event-rule"
                     data-event-name="url_change_match"
                     data-event-val="url_match_val" />
                 <label for="url_match">URL match</label>
+                <input type="text" class="event-alias" value="url_change_match" placeholder="alias" />
             </p>
             <p>
                 <input type="text" value="" id="url_match_val" placeholder="URL" />
             </p>
-
             <p>
                 <input type="checkbox" name="scroll_depth" class="event-rule"
                     data-event-name="scroll_depth"/>
                 <label for="scroll_depth">Scroll depth</label>
+                <input type="text" class="event-alias" value="scroll_depth" placeholder="alias" />
             </p>
 
             <p>
                 <input type="checkbox" name="finish_article" class="event-rule"
                     data-event-name="finish_article"/>
                 <label for="finish_article">Finish article</label>
+                <input type="text" class="event-alias" value="finish_article" placeholder="alias" />
             </p>
             <p>
               <input type="text" id="finish_article_attrs" value="" placeholder="attributes" />
@@ -77,6 +82,7 @@
                         data-event-val="click_val-c` + rules_count + `"
                         data-event-attrs="click_attrs-c` + rules_count + `" />
                     <label for="">Click</label>
+                    <input type="text" class="event-alias" value="click" placeholder="alias" />
                 </p>`;
 
             p2.innerHTML = `
@@ -99,6 +105,7 @@
                 var eventName,
                     eventValueId, eventAttrsId,
                     val,
+                    aliasEl, alias,
                     attrs;
 
                 if (!el.checked) {
@@ -109,9 +116,11 @@
                 eventValueId = el.getAttribute('data-event-val');
                 eventAttrsId = el.getAttribute('data-event-attrs');
                 val = eventValueId ? document.getElementById(eventValueId).value : null;
+                aliasEl = el.parentNode.querySelector('.event-alias');
+                alias = aliasEl ? aliasEl.value : null;
 
                 if (eventName === 'click') {
-                    let eventObj = {};
+                    let eventObj = { alias: alias || val };
 
                     if (!config.click) {
                         config.click = [];
@@ -123,18 +132,16 @@
                     if (attrs) {
                         eventObj.attrs = attrs.split(',');
                     }
-
                     config.click.push(eventObj);
-                } else if (eventName === 'finish_article') {
-                    let eventObj = {};
 
+                } else if (eventName === 'finish_article') {
                     if (!config.finish_article) {
-                        config.finish_article = {};
+                        config.finish_article = { alias: alias || eventName };
                     }
                     config.finish_article.attrs = document.getElementById('finish_article_attrs').value;
 
                 } else {
-                    config[eventName] = eventValueId ? val : true;
+                    config[eventName] = { alias: alias || eventName };
                 }
             });
 
