@@ -126,7 +126,7 @@
 
     Observer.prototype.observeScrollToArticle = function () {
         var elements = document.querySelectorAll('article'),
-            eventConfigObject = this.eventsConfig.finish_article
+            eventConfigObject = this.eventsConfig.finish_article;
 
         this.resetReadArticles();
 
@@ -137,8 +137,7 @@
             window.addEventListener('scroll', function () {
                 if (document.body.scrollTop > offset.top && iter > this.lastArticleIter) {
                     var data = {
-                        id: articleId || iter,
-                        el: el
+                        id: articleId || iter
                     };
 
                     if (Array.isArray(eventConfigObject.attrs)) {
