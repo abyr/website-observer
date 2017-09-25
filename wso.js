@@ -1,4 +1,5 @@
 (function () {
+    // http://lisperator.net/uglifyjs/
     var eventsConfig = window.wsoc || {},
         debug = window.location.search.indexOf("debug=1") > 0,
         debugIframe,
@@ -22,8 +23,8 @@
             this.lastUrl = window.location.href;
             this.eventsList = alleventsList,
             this.eventsHistory = {};
-
             this.urlChangeInterval = null;
+            this.setScrollDepth('0%');
 
             alleventsList.forEach(function (eventName) {
                 var listedEvent = this.eventsConfig[eventName];
@@ -57,23 +58,55 @@
     };
 
     Observer.prototype.printableEventsHistory = function () {
+        if (eventsConfig.printByAliases) {
+            return this.printableAliasesHistory();
+        }
         return Object.keys(this.eventsConfig).map(function (eventName, index) {
             var eventInHistory = this.eventsHistory[eventName];
 
             if (eventName === 'click') {
                 return Object.keys(eventInHistory).map(function (itemName) {
-                    return 'click ' + itemName + ': ' + eventInHistory[itemName].length;
+                    return this.formatEventReport('click ' + itemName, eventInHistory[itemName].length);
                 }).join('<br />');
             }
+            if (eventName === 'scroll_depth') {
+                return this.formatEventReport(eventName, this.getScrollDepth());
+            }
 
-            if (typeof eventInHistory === 'undefined') {
-                return '';
+            if (typeof eventInHistory !== 'undefined') {
+                return this.formatEventReport(eventName,
+                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') + ': ' + eventInHistory.length);
             } else {
-                return eventName +
-                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') +
-                    ': ' + eventInHistory.length;
+                return '';
             }
         }.bind(this)).concat(['...', JSON.stringify(eventsConfig)]).join('<br />');
+    };
+
+    Observer.prototype.printableAliasesHistory = function () {
+        return Object.keys(window.wsoc).map(function (eventName, index) {
+            var eventInHistory = window.wso.eventsHistory[eventName];
+
+            if (eventName === 'click') {
+                return Object.keys(eventInHistory).map(function (itemName) {
+                    return this.formatEventReport(this.eventsConfig[eventName].find(function (evnt) {
+                        return evnt.target === itemName;
+                    }).alias, eventInHistory[itemName].length);
+                }, this).join('<br />');
+            }
+            if (eventName === 'scroll_depth') {
+                return this.formatEventReport(eventName, this.getScrollDepth());
+            }
+
+            if (typeof eventInHistory !== 'undefined') {
+                return this.formatEventReport(this.eventsConfig[eventName].alias, eventInHistory.length);
+            } else {
+                return '';
+            }
+        }.bind(this))/*.concat(['...', JSON.stringify(this.eventsConfig)])*/.join('<br />');
+    };
+
+    Observer.prototype.formatEventReport = function (eventName, value) {
+        return eventName + ': ' + value;
     };
 
     Observer.prototype.observeUrlChange = function (urlPattern) {
@@ -181,7 +214,8 @@
                 if (currentHeight > neededHeight && lastCheckPoint < neededHeight) {
                     lastCheckPoint = neededHeight;
                     reachedNewCheckPoint = true;
-                    this.fireEvent('scroll_depth', { depth: (ratio * 100) + '%' });
+                    this.setScrollDepth((ratio * 100) + '%');
+                    this.fireEvent('scroll_depth', { depth: this.getScrollDepth() });
                 }
             }, this);
         }.bind(this));
@@ -225,8 +259,10 @@
     };
 
     Observer.prototype.getAlias = function (eventName, detail) {
+        var eventObj;
+
         if (eventName === 'click' && detail && detail.target) {
-            let eventObj = this.eventsConfig[eventName].find(function (ev) {
+            eventObj = this.eventsConfig[eventName].find(function (ev) {
                     return ev.target === detail.target;
                 });
 
@@ -234,6 +270,14 @@
         } else {
             return this.eventsConfig[eventName].alias || eventName;
         }
+    };
+
+    Observer.prototype.getScrollDepth = function () {
+        return this.scrollDepth;
+    };
+
+    Observer.prototype.setScrollDepth = function (value) {
+        this.scrollDepth = value;
     };
 
     window.wso = new Observer(eventsConfig);
