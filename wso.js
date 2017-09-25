@@ -57,6 +57,9 @@
     };
 
     Observer.prototype.printableEventsHistory = function () {
+        if (eventsConfig.printByAliases) {
+            return this.printableAliasesHistory();
+        }
         return Object.keys(this.eventsConfig).map(function (eventName, index) {
             var eventInHistory = this.eventsHistory[eventName];
 
@@ -74,6 +77,26 @@
                     ': ' + eventInHistory.length;
             }
         }.bind(this)).concat(['...', JSON.stringify(eventsConfig)]).join('<br />');
+    };
+
+    Observer.prototype.printableAliasesHistory = function () {
+        return Object.keys(window.wsoc).map(function (eventName, index) {
+            var eventInHistory = window.wso.eventsHistory[eventName];
+
+            if (eventName === 'click') {
+                return Object.keys(eventInHistory).map(function (itemName) {
+                    return this.eventsConfig[eventName].find(function (evnt) {
+                        return evnt.target === itemName;
+                    }).alias + ': ' + eventInHistory[itemName].length;
+                }, this).join('<br />');
+            }
+
+            if (typeof eventInHistory !== 'undefined') {
+                return this.eventsConfig[eventName].alias + ': ' + eventInHistory.length;
+            } else {
+                return '';
+            }
+        }.bind(this)).concat(['...', JSON.stringify(this.eventsConfig)]).join('<br />');
     };
 
     Observer.prototype.observeUrlChange = function (urlPattern) {
@@ -225,8 +248,10 @@
     };
 
     Observer.prototype.getAlias = function (eventName, detail) {
+        var eventObj;
+
         if (eventName === 'click' && detail && detail.target) {
-            let eventObj = this.eventsConfig[eventName].find(function (ev) {
+            eventObj = this.eventsConfig[eventName].find(function (ev) {
                     return ev.target === detail.target;
                 });
 
