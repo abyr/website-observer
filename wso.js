@@ -26,6 +26,8 @@
             this.urlChangeInterval = null;
             this.setScrollDepth('0%');
 
+            this.statesHistory = [];
+
             alleventsList.forEach(function (eventName) {
                 var listedEvent = this.eventsConfig[eventName];
 
@@ -67,7 +69,7 @@
             if (eventName === 'click') {
                 return Object.keys(eventInHistory).map(function (itemName) {
                     return this.formatEventReport('click ' + itemName, eventInHistory[itemName].length);
-                }).join('<br />');
+                }, this).join('<br />');
             }
             if (eventName === 'scroll_depth') {
                 return this.formatEventReport(eventName, this.getScrollDepth());
@@ -249,6 +251,8 @@
 
         data = Object.assign(data, detail, { name: eventName });
 
+        this.pushState(data);
+
         if (window.CustomEvent) {
             observerEvent = new CustomEvent('wso-event', { detail: data });
         } else {
@@ -256,6 +260,10 @@
             observerEvent.initCustomEvent('wso-event', true, true, data);
         }
         document.dispatchEvent(observerEvent);
+    };
+
+    Observer.prototype.pushState = function (stateObj) {
+        this.statesHistory.push(stateObj);
     };
 
     Observer.prototype.getAlias = function (eventName, detail) {
