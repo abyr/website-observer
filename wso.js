@@ -77,7 +77,7 @@
 
             if (typeof eventInHistory !== 'undefined') {
                 return this.formatEventReport(eventName,
-                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') + ': ' + eventInHistory.length);
+                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') + eventInHistory.length);
             } else {
                 return '';
             }
@@ -203,7 +203,7 @@
             lastCheckPoint = -1;
 
         window.addEventListener("scroll", function () {
-            var scrollTop = document.body.scrollTop,
+            var scrollTop = document.body.scrollTop || window.pageYOffset,
                 reachedNewCheckPoint = false;
 
             checkPointRatios.forEach(function (ratio) {
@@ -213,6 +213,7 @@
                 if (reachedNewCheckPoint) {
                     return;
                 }
+                console.log('scroll', lastCheckPoint, currentHeight, neededHeight);
                 if (currentHeight > neededHeight && lastCheckPoint < neededHeight) {
                     lastCheckPoint = neededHeight;
                     reachedNewCheckPoint = true;
