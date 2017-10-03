@@ -170,7 +170,9 @@
                 articleId = el.getAttribute('id');
 
             window.addEventListener('scroll', function () {
-                if (document.body.scrollTop > offset.top && iter > this.lastArticleIter) {
+                var scrollTop = document.body.scrollTop || window.pageYOffset;
+
+                if (scrollTop > offset.top && iter > this.lastArticleIter) {
                     var data = {
                         id: articleId || iter
                     };
@@ -183,7 +185,7 @@
 
                     this.fireEvent('finish_article', data);
                     this.lastArticleIter = iter;
-                } else if (document.body.scrollTop === 0) {
+                } else if (scrollTop === 0) {
                     this.resetReadArticles();
                 }
             }.bind(this));
