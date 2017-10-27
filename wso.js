@@ -81,7 +81,7 @@
             } else {
                 return '';
             }
-        }.bind(this)).concat(['...', JSON.stringify(eventsConfig)]).join('<br />');
+        }, this).concat(['...', JSON.stringify(eventsConfig)]).join('<br />');
     };
 
     Observer.prototype.printableAliasesHistory = function () {
@@ -104,7 +104,8 @@
             } else {
                 return '';
             }
-        }.bind(this))/*.concat(['...', JSON.stringify(this.eventsConfig)])*/.join('<br />');
+        // }.bind(this)).join('<br />');
+        }.bind(this)).concat(['...', JSON.stringify(this.eventsConfig)]).join('<br />');
     };
 
     Observer.prototype.formatEventReport = function (eventName, value) {
@@ -215,7 +216,6 @@
                 if (reachedNewCheckPoint) {
                     return;
                 }
-                console.log('scroll', lastCheckPoint, currentHeight, neededHeight);
                 if (currentHeight > neededHeight && lastCheckPoint < neededHeight) {
                     lastCheckPoint = neededHeight;
                     reachedNewCheckPoint = true;
