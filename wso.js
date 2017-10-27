@@ -26,6 +26,8 @@
             this.urlChangeInterval = null;
             this.setScrollDepth('0%');
 
+            this.statesHistory = [];
+
             alleventsList.forEach(function (eventName) {
                 var listedEvent = this.eventsConfig[eventName];
 
@@ -67,7 +69,7 @@
             if (eventName === 'click') {
                 return Object.keys(eventInHistory).map(function (itemName) {
                     return this.formatEventReport('click ' + itemName, eventInHistory[itemName].length);
-                }).join('<br />');
+                }, this).join('<br />');
             }
             if (eventName === 'scroll_depth') {
                 return this.formatEventReport(eventName, this.getScrollDepth());
@@ -75,7 +77,7 @@
 
             if (typeof eventInHistory !== 'undefined') {
                 return this.formatEventReport(eventName,
-                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') + ': ' + eventInHistory.length);
+                    (typeof this.eventsConfig[eventName] === 'string' ? '[' + this.eventsConfig[eventName] + ']' : '') + eventInHistory.length);
             } else {
                 return '';
             }
@@ -168,7 +170,9 @@
                 articleId = el.getAttribute('id');
 
             window.addEventListener('scroll', function () {
-                if (document.body.scrollTop > offset.top && iter > this.lastArticleIter) {
+                var scrollTop = document.body.scrollTop || window.pageYOffset;
+
+                if (scrollTop > offset.top && iter > this.lastArticleIter) {
                     var data = {
                         id: articleId || iter
                     };
@@ -181,7 +185,7 @@
 
                     this.fireEvent('finish_article', data);
                     this.lastArticleIter = iter;
-                } else if (document.body.scrollTop === 0) {
+                } else if (scrollTop === 0) {
                     this.resetReadArticles();
                 }
             }.bind(this));
@@ -201,7 +205,7 @@
             lastCheckPoint = -1;
 
         window.addEventListener("scroll", function () {
-            var scrollTop = document.body.scrollTop,
+            var scrollTop = document.body.scrollTop || window.pageYOffset,
                 reachedNewCheckPoint = false;
 
             checkPointRatios.forEach(function (ratio) {
@@ -211,6 +215,7 @@
                 if (reachedNewCheckPoint) {
                     return;
                 }
+                console.log('scroll', lastCheckPoint, currentHeight, neededHeight);
                 if (currentHeight > neededHeight && lastCheckPoint < neededHeight) {
                     lastCheckPoint = neededHeight;
                     reachedNewCheckPoint = true;
@@ -249,6 +254,8 @@
 
         data = Object.assign(data, detail, { name: eventName });
 
+        this.pushState(data);
+
         if (window.CustomEvent) {
             observerEvent = new CustomEvent('wso-event', { detail: data });
         } else {
@@ -256,6 +263,10 @@
             observerEvent.initCustomEvent('wso-event', true, true, data);
         }
         document.dispatchEvent(observerEvent);
+    };
+
+    Observer.prototype.pushState = function (stateObj) {
+        this.statesHistory.push(stateObj);
     };
 
     Observer.prototype.getAlias = function (eventName, detail) {
