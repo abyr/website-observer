@@ -2,7 +2,7 @@
 
 Observe what is happening with your website using such events like page views, scroll depth, clicks.
 
-[Quick Demo](https://abyr.github.io/website-observer/demo.html)
+[Quick Demo](https://abyr.github.io/website-observer/demo.html?debug=1)
 
 ## Setup
 
